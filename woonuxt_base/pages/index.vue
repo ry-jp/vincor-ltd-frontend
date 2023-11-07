@@ -4,7 +4,7 @@ const productCategories = data.value?.productCategories?.nodes || [];
 const runtimeConfig = useRuntimeConfig();
 
 useHead({
-  title: `Home | WooNuxt`,
+  title: `Home | Vincor Ltd.`,
   meta: [{ name: 'description', content: 'The best ecommerce store in the world' }],
   link: [{ rel: 'canonical', href: runtimeConfig?.public?.FRONT_END_URL }],
 });

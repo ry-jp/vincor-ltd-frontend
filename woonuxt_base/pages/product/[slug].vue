@@ -68,7 +68,6 @@ const updateSelectedVariations = (variations: Variation[]): void => {
               {{ type.name }}
               <WPAdminLink :link="`/wp-admin/post.php?post=${product.databaseId}&action=edit`">Edit</WPAdminLink>
             </h1>
-            <StarRating :rating="product.averageRating || 0" :count="product.reviewCount || 0" />
           </div>
           <ProductPrice class="text-xl" :sale-price="type.salePrice" :regular-price="type.regularPrice" />
         </div>
@@ -88,6 +87,22 @@ const updateSelectedVariations = (variations: Variation[]): void => {
         <div class="mb-8 font-light prose" v-html="product.description || product.shortDescription"></div>
 
         <hr />
+
+        <div class="pt-6 flex flex-col" v-if="product.addons">
+              <p class="flex flex-col gap-4 pb-4" v-for="addons in product.addons" :key="addons.slug"
+                >{{ addons.name }}
+              <select class=" font-semibold text-base" v-model="selected" v-if="product.addons">
+                <option class="font-semibold text-base" v-for="options in addons.options" :key="addons.slug">
+                  {{ options.label }} <p v-if="options.price" >(+${{ options.price }})</p>
+
+                </option>
+              </select>
+            </p>
+            <p class="font-semibold">Total Price: <ProductPrice class="text-xl text-red-600" :sale-price="type.salePrice" :regular-price="type.regularPrice" /></p>
+            </div>
+
+
+
 
         <form @submit.prevent="addToCart(selectProductInput)">
           <AttributeSelections
@@ -120,7 +135,7 @@ const updateSelectedVariations = (variations: Variation[]): void => {
         <hr />
         <div class="flex flex-wrap gap-4">
           <WishlistButton :product="product" />
-          <ShareButton :product="product" />
+
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 const runtimeConfig = useRuntimeConfig();
 const logoUrl = runtimeConfig?.public?.LOGO || null;
 </script>
