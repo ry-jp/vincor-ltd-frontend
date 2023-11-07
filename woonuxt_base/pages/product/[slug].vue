@@ -3,8 +3,9 @@ const route = useRoute();
 const { arraysEqual, formatArray, checkForVariationTypeOfAny } = useHelpers();
 const { addToCart, isUpdatingCart } = useCart();
 const { decodeURI } = useHelpers();
+const slug = route.params.slug as string;
 
-const { data } = (await useAsyncGql('getProduct', { slug: route.params.slug })) as { data: { value: { product: Product } } };
+const { data } = (await useAsyncGql('getProduct', { slug })) as { data: { value: { product: Product } } };
 const product = data?.value?.product;
 
 useHead({
@@ -63,7 +64,10 @@ const updateSelectedVariations = (variations: Variation[]): void => {
       <div class="md:max-w-md md:py-2">
         <div class="flex justify-between mb-4">
           <div class="flex-1">
-            <h1 class="mb-2 text-2xl font-sesmibold">{{ type.name }}</h1>
+            <h1 class="mb-2 text-2xl font-sesmibold flex items-center flex-wrap gap-2">
+              {{ type.name }}
+              <WPAdminLink :link="`/wp-admin/post.php?post=${product.databaseId}&action=edit`">Edit</WPAdminLink>
+            </h1>
             <StarRating :rating="product.averageRating || 0" :count="product.reviewCount || 0" />
           </div>
           <ProductPrice class="text-xl" :sale-price="type.salePrice" :regular-price="type.regularPrice" />

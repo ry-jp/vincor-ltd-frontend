@@ -36,10 +36,16 @@ export function useSearching() {
   };
 
   function searchProducts(products: Product[]): Product[] {
-    // chec on the search page /products
-    if (route.name !== 'products') {
+    const currentRouteName = route.name || 'products'; // Default to products
+
+    // If we are on a category page, we need to add the category slug to the route, otherwise every search will redirect to the products page
+    if (route.name === 'product-category-slug') {
+      const categorySlug = route.params.categorySlug as string;
+      router.push({ name: currentRouteName, params: { categorySlug }, query: { search: searchQuery.value } });
+    } else {
       router.push({ name: 'products', query: { search: searchQuery.value } });
     }
+
     const query = getSearchQuery();
     return query
       ? products.filter((product: Product) => {

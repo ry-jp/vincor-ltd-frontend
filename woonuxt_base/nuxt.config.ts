@@ -20,6 +20,7 @@ export default defineNuxtConfig({
   image: {
     domains: process.env.NUXT_IMAGE_DOMAINS ? process.env.NUXT_IMAGE_DOMAINS.replace(/ /g, '').split(',') : [],
   },
+
   pages: true,
 
   hooks: {
@@ -32,11 +33,13 @@ export default defineNuxtConfig({
       pages.push({
         name: 'product-category-page',
         path: '/product-category/:categorySlug',
+        // file: resolve('./pages/products.vue'),
         file: resolve('./pages/product-category/[slug].vue'),
       });
       pages.push({
         name: 'product-category-page-pager',
         path: '/product-category/:categorySlug/page/:pageNumber',
+        // file: resolve('./pages/products.vue'),
         file: resolve('./pages/product-category/[slug].vue'),
       });
       pages.push({
