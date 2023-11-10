@@ -3,6 +3,7 @@ import { createResolver } from '@nuxt/kit';
 const { resolve } = createResolver(import.meta.url);
 
 export default defineNuxtConfig({
+  
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
@@ -17,6 +18,7 @@ export default defineNuxtConfig({
 
   modules: ['woonuxt-settings', 'nuxt-graphql-client', '@nuxtjs/tailwindcss', 'nuxt-icon', '@nuxt/image', '@nuxtjs/i18n'],
 
+  
   image: {
     domains: process.env.NUXT_IMAGE_DOMAINS ? process.env.NUXT_IMAGE_DOMAINS.replace(/ /g, '').split(',') : [],
   },
@@ -80,4 +82,5 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     strategy: 'no_prefix',
   },
+
 });

@@ -7,10 +7,6 @@ const runtimeConfig = useRuntimeConfig();
     <div class="container flex flex-wrap justify-between gap-12 my-24 md:gap-24">
       <div class="mr-auto">
         <Logo />
-        <p class="mt-4 text-sm text-gray-700 xl:max-w-sm">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl sit amet aliquam lacinia, nunc odio lacinia tortor, vel aliquam nisl lorem quis nunc. Sed
-          euismod, nisl sit amet aliquam lacinia, nunc odio lacinia tortor, vel aliquam nisl lorem quis nunc.
-        </p>
         <LangSwitcher class="mt-8" />
       </div>
       <div class="w-3/7 lg:w-auto">
@@ -46,14 +42,6 @@ const runtimeConfig = useRuntimeConfig();
           <NuxtLink to="/wishlist" class="py-1.5 block">{{ $t('messages.shop.wishlist') }}</NuxtLink>
           <a class="py-1.5 block">{{ $t('messages.general.newsletter') }}</a>
         </div>
-      </div>
-    </div>
-    <div class="container border-t">
-      <div class="copywrite">
-        <p class="py-4 text-xs text-center">
-          <a href="https://woonuxt.com">WooNuxt v{{ runtimeConfig.public.version }}</a> - by
-          <a href="https://scottyzen.com" target="_blank">Scottyzen</a>
-        </p>
       </div>
     </div>
   </div>

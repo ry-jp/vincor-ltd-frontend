@@ -62,7 +62,6 @@ const colorVariableImage = computed(() => {
     <img v-else src="/images/placeholder.jpg" :alt="node.image?.altText || node.name" :title="node.image?.title || node.name" loading="lazy" />
 
     <div class="p-2">
-      <StarRating :rating="node.averageRating" :count="node.reviewCount" />
       <h2 class="mb-2 font-light leading-tight">{{ node.name }}</h2>
       <ProductPrice class="text-sm" :sale-price="node.salePrice" :regular-price="node.regularPrice" />
     </div>

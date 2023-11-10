@@ -12,4 +12,10 @@ export default defineNuxtConfig({
       failOnError: false, // This stops the build from failing but the page will not be statically generated
     },
   },
+
+  devtools: {
+    enabled: true,
+  },
+
+
 });

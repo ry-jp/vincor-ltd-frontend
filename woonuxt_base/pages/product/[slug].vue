@@ -7,6 +7,10 @@ const slug = route.params.slug as string;
 
 const { data } = (await useAsyncGql('getProduct', { slug })) as { data: { value: { product: Product } } };
 const product = data?.value?.product;
+const addon = product?.addons;
+
+
+
 
 useHead({
   title: product?.name || 'Product',
@@ -88,23 +92,24 @@ const updateSelectedVariations = (variations: Variation[]): void => {
 
         <hr />
 
-        <div class="pt-6 flex flex-col" v-if="product.addons">
-              <p class="flex flex-col gap-4 pb-4" v-for="addons in product.addons" :key="addons.slug"
-                >{{ addons.name }}
-              <select class=" font-semibold text-base" v-model="selected" v-if="product.addons">
-                <option class="font-semibold text-base" v-for="options in addons.options" :key="addons.slug">
-                  {{ options.label }} <p v-if="options.price" >(+${{ options.price }})</p>
 
-                </option>
-              </select>
-            </p>
-            <p class="font-semibold">Total Price: <ProductPrice class="text-xl text-red-600" :sale-price="type.salePrice" :regular-price="type.regularPrice" /></p>
-            </div>
 
 
 
 
         <form @submit.prevent="addToCart(selectProductInput)">
+          <div class="pt-6 flex flex-col" v-if="product.addons">
+              <div class="flex flex-col gap-4 pb-4" v-for="addons in product.addons" :key="addons.slug"
+                >{{ addons.name }}
+              <select class=" font-semibold text-base" v-model="selected" v-if="product.addons">
+                <option class="font-semibold text-base" v-for="options in addons.options" :key="addons.slug">
+                  {{ options.label }} <p v-if="options.price" >(+${{ options.price }})</p>
+                </option>
+              </select>
+              <div>{{ selected }}</div>
+            </div>
+            <p class="font-semibold text-xl text-red-600">Total Price: <ProductPrice :sale-price="type.salePrice" :regular-price="type.regularPrice" /></p>
+            </div>
           <AttributeSelections
             v-if="product.type == 'VARIABLE' && product.attributes && product.variations"
             class="mt-4 mb-8"

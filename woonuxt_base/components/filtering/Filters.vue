@@ -28,8 +28,7 @@ const { hideCategories } = defineProps({ hideCategories: { type: Boolean, defaul
           :show-count="attribute.showCount"
           :hide-empty="attribute.hideEmpty" />
       </div>
-      <OnSaleFilter />
-      <StarRatingFilter />
+
       <ResetFiltersButton />
     </div>
   </aside>
