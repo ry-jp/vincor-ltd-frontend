@@ -23,6 +23,7 @@ const updateQuantity = () => {
         :src="productType.image.cartSourceUrl || productType.image.sourceUrl || item.product.image.sourceUrl"
         :alt="productType.image?.altText || productType.name"
         :title="productType.image?.title || productType.name"
+
         loading="lazy" />
       <img
         v-else
@@ -36,6 +37,7 @@ const updateQuantity = () => {
     </NuxtLink>
     <div class="flex-1">
       <NuxtLink class="leading-tight" :to="`/product/${decodeURI(productType.slug)}`">{{ productType.name }}</NuxtLink>
+
       <ProductPrice class="mt-1 text-xs" :sale-price="productType.salePrice" :regular-price="productType.regularPrice" />
     </div>
     <input

@@ -10,28 +10,21 @@ const show = ref(0);
   <div>
     <nav class="border-b flex gap-8 tabs">
       <a :class="show === 0 ? 'active' : ''" @click.prevent="show = 0">{{ $t('messages.shop.productDescription') }}</a>
-      <a :class="show === 1 ? 'active' : ''" @click.prevent="show = 1">{{ $t('messages.shop.reviews') }} ({{ product.reviewCount }})</a>
+      <a :class="show === 1 ? 'active' : ''" @click.prevent="show = 1">Document</a>
     </nav>
     <div class="tab-contents">
       <div v-if="show === 0" class="font-light mt-8 prose" v-html="product.description"></div>
       <div v-if="show === 1">
         <div class="flex flex-wrap gap-32 items-start">
           <div class="flex max-w-sm gap-4 prose">
-            <ReviewsScore :reviews="product.reviews" :productId="product.databaseId" />
-          </div>
+                      </div>
           <div class="divide-y flex-1">
-            <div v-for="review in product.reviews.edges" :key="review.id" class="my-2 py-8">
-              <div class="flex gap-4 items-center">
-                <img v-if="review.node.author.node.avatar" :src="review.node.author.node.avatar.url" class="rounded-full h-12 w-12" />
-                <div class="grid gap-1">
-                  <div class="text-sm">
-                    <span class="font-semibold">{{ review.node.author.node.name }}</span>
-                    <span class="italic text-gray-400"> – {{ new Date(review.node.date).toLocaleString($t('messages.general.langCode'), { month: 'long', day: 'numeric', year: 'numeric' }) }}</span>
-                  </div>
-                  <StarRating :rating="review.rating" :hide-count="true" class="text-sm" />
-                </div>
-              </div>
-              <div class="mt-4 text-gray-700 italic prose-sm" v-html="review.node.content"></div>
+            <p class="text-red-600 text-lg">{{ product.category }}</p>
+                    <p class="text-red-600 text-lg">{{ product.sku }}</p>
+                  <div>
+                  <iframe :src="`https://vincor.com/wp-content/pdf/products/${product.sku}.pdf`" width="100%" height="1024">
+  </iframe>
+
             </div>
           </div>
         </div>
