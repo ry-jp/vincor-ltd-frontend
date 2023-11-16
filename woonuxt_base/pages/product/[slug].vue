@@ -7,7 +7,6 @@ const slug = route.params.slug as string;
 
 const { data } = (await useAsyncGql('getProduct', { slug })) as { data: { value: { product: Product } } };
 const product = data?.value?.product;
-const addon = product?.addons;
 
 
 

@@ -3,6 +3,8 @@ const { data } = await useAsyncGql('getProductCategories', { first: 6 });
 const productCategories = data.value?.productCategories?.nodes || [];
 const runtimeConfig = useRuntimeConfig();
 
+
+
 useHead({
   title: `Home | Vincor Ltd.`,
   meta: [{ name: 'description', content: 'The best ecommerce store in the world' }],
@@ -20,7 +22,7 @@ useHead({
       <img src="/images/brands/norsat.png" alt="Brand 1" width="200" height="35" />
       <img src="/images/brands/eti.png" alt="Brand 2" width="80" height="30" />
       <img src="/images/brands/andrew.png" alt="Brand 3" width="175" height="48" />
-      <img src="/images/brands/Kratos.png" alt="Brand 4" width="175" height="30" />
+      <img src="/images/brands/venture.png" alt="Brand 4" width="200" height="30" />
       <img src="/images/brands/quintech.png" alt="Brand 5" width="200" height="44" />
       <img src="/images/brands/dh.png" alt="Brand 6" width="65" height="40" />
     </div>
@@ -34,6 +36,7 @@ useHead({
       <div class="grid justify-center grid-cols-2 gap-4 mt-8 md:grid-cols-3 lg:grid-cols-6">
         <CategoryCard v-for="(category, i) in productCategories" :key="i" class="w-full" :node="category" />
       </div>
+
     </section>
 
     <!-- <section class="container grid gap-4 my-24 md:grid-cols-2 lg:grid-cols-4">

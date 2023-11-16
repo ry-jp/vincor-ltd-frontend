@@ -37,7 +37,7 @@ const updateQuantity = () => {
     </NuxtLink>
     <div class="flex-1">
       <NuxtLink class="leading-tight" :to="`/product/${decodeURI(productType.slug)}`">{{ productType.name }}</NuxtLink>
-
+      
       <ProductPrice class="mt-1 text-xs" :sale-price="productType.salePrice" :regular-price="productType.regularPrice" />
     </div>
     <input
