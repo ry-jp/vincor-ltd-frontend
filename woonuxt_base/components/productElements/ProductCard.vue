@@ -64,7 +64,6 @@ const colorVariableImage = computed(() => {
       <NuxtImg v-else src="/images/placeholder.jpg" :alt="node.image?.altText || node.name" :title="node.image?.title || node.name" loading="lazy" />
     </NuxtLink>
     <div class="p-2">
-      <StarRating :rating="node.averageRating" :count="node.reviewCount" />
       <NuxtLink :to="`/product/${decodeURI(node.slug)}`">
         <h2 class="mb-2 font-light leading-tight">{{ node.name }}</h2>
       </NuxtLink>
