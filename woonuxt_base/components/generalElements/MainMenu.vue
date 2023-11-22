@@ -7,7 +7,7 @@
     <NuxtLink to="/about-us" class="hover:text-blue-200">About Us</NuxtLink>
     <NuxtLink to="/about-us" class="hover:text-blue-200">Field Service</NuxtLink>
 
-    <NuxtLink class="lg:hidden" to="/wishlist">Wishlist</NuxtLink>
-    <NuxtLink class="lg:hidden" to="/my-account">My Account</NuxtLink>
+    <NuxtLink class="lg:hidden" to="/wishlist" :prefetch="false">Wishlist</NuxtLink>
+    <NuxtLink class="lg:hidden" to="/my-account" :prefetch="false">My Account</NuxtLink>
   </nav>
 </template>

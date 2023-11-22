@@ -2,7 +2,7 @@ let allProducts = [] as Product[];
 
 export function useProducts() {
   // Declare the state variables and the setter functions
-  const products = useState<Product[]>('products', () => []);
+  const products = useState<Product[]>('products');
 
   // Set the products state and the allProducts variable
   function setProducts(newProducts: Product[]): void {
@@ -16,9 +16,9 @@ export function useProducts() {
   }
 
   const updateProductList = async (): Promise<void> => {
+    const { isSortingActive, sortProducts } = await useSorting();
     const { isFiltersActive, filterProducts } = await useFiltering();
     const { isSearchActive, searchProducts } = await useSearching();
-    const { isSortingActive, sortProducts } = await useSorting();
 
     // return all products if no filters are active
     if (!isFiltersActive.value && !isSearchActive.value && !isSortingActive.value) {
