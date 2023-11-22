@@ -19,7 +19,7 @@ const removeItem = () => {
 
 <template>
   <SwipeCard @remove="removeItem">
-    <li v-if="productType" class="flex items-center gap-3">
+    <li v-if="productType" class="flex items-center gap-3 z-50">
       <NuxtLink :to="productSlug">
         <img
           v-if="productType.image"

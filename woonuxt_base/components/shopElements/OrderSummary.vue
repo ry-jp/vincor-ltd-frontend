@@ -3,14 +3,14 @@ const { cart, isUpdatingCart } = useCart();
 </script>
 
 <template>
-  <aside class="bg-white rounded-lg shadow-lg mb-8 w-full min-h-[280px] p-8 relative md:max-w-sm md:top-36 md:sticky">
+  <aside class="bg-white rounded-lg shadow-lg mb-8 w-full min-h-[300px] p-8 relative md:max-w-sm lg:max-w-xl md:top-36 md:sticky">
     <h2 class="mb-6 text-xl font-semibold leading-none">{{ $t('messages.shop.orderSummary') }}</h2>
 
-    <ul class="flex flex-col gap-4 -mr-2 overflow-y-scroll">
+    <ul class="flex flex-col gap-12 mb-16 -mr-2 ">
       <CartCard v-for="item in cart.contents.nodes" :key="item.key" :item="item" />
     </ul>
 
-    <AddCoupon class="my-8" />
+
 
     <div class="grid gap-1 text-sm font-semibold text-gray-500">
       <div class="flex justify-between">

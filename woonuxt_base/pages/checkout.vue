@@ -103,41 +103,8 @@ const checkEmailOnInput = (email) => {
             <BillingDetails v-model="customer.billing" :sameAsShippingAddress="orderInput.shipToDifferentAddress" />
           </div>
 
-          <label for="shipToDifferentAddress" class="flex items-center gap-2">
-            <span>{{ $t('messages.billing.differentAddress') }}</span>
-            <input id="shipToDifferentAddress" v-model="orderInput.shipToDifferentAddress" type="checkbox" name="shipToDifferentAddress" />
-          </label>
-
-          <Transition name="scale-y" mode="out-in">
-            <div v-show="orderInput.shipToDifferentAddress">
-              <h2 class="mb-4 text-xl font-semibold">{{ $t('messages.general.shippingDetails') }}</h2>
-              <ShippingDetails v-model="customer.shipping" />
-            </div>
-          </Transition>
-
-          <!-- Shipping methods -->
-          <div v-if="cart.availableShippingMethods.length">
-            <h3 class="mb-4 text-xl font-semibold">{{ $t('messages.general.shippingSelect') }}</h3>
-            <ShippingOptions :options="cart.availableShippingMethods[0].rates" :active-option="cart.chosenShippingMethods[0]" />
-          </div>
 
           <!-- Pay methods -->
-          <div v-if="paymentGateways.length" class="mt-2 col-span-full">
-            <h2 class="mb-4 text-xl font-semibold">{{ $t('messages.billing.paymentOptions') }}</h2>
-            <PaymentOptions v-model="orderInput.paymentMethod" class="mb-4" :paymentGateways="paymentGateways" />
-
-            <Transition name="scale-y" mode="out-in">
-              <StripeElements
-                v-show="orderInput.paymentMethod == 'stripe'"
-                v-slot="{ elements, instance }"
-                ref="elms"
-                :stripe-key="stripeKey"
-                :instance-options="instanceOptions"
-                :elements-options="elementsOptions">
-                <StripeElement ref="card" :elements="elements" :options="cardOptions" />
-              </StripeElements>
-            </Transition>
-          </div>
 
           <!-- Order note -->
           <div>
@@ -155,7 +122,7 @@ const checkEmailOnInput = (email) => {
         <OrderSummary>
           <button
             class="flex items-center justify-center w-full gap-3 p-3 mt-4 font-semibold text-center text-white rounded-lg shadow-md bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
-            :disabled="isCheckoutDisabled">
+            >
             {{ buttonText }}
             <LoadingIcon v-if="isProcessingOrder" color="#fff" size="18" />
           </button>

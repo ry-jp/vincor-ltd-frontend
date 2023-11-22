@@ -26,10 +26,6 @@ const billing = toRef(props, 'modelValue');
       <input v-model="billing.address1" placeholder="O'Connell Street" type="text" required />
     </div>
 
-    <div class="w-full col-span-full">
-      <label for="address2">{{ $t('messages.billing.address2') }}</label>
-      <input v-model="billing.address2" placeholder="Dublin 1" type="text" />
-    </div>
 
     <div class="w-full">
       <label for="city">{{ $t('messages.billing.city') }}</label>
