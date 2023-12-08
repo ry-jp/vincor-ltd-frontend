@@ -87,6 +87,21 @@ export function useHelpers() {
     return indexOfTypeAny;
   };
 
+  const checkForOptionTypeOfAny = (product: Product): number[] => {
+    const numberOfOptions = product?.addons?.options?.length || 0;
+    let indexOfTypeAny = [] as number[];
+    for (let index = 0; index < numberOfOptions; index++) {
+      const tempArray = [] as string[];
+      product.addons?.options.forEach((element) => {
+        if (element.addons?.options[index]?.value) tempArray.push(element.addons.options[index].value as string);
+      });
+
+      if (!tempArray.some(Boolean)) indexOfTypeAny.push(index);
+    }
+
+    return indexOfTypeAny;
+  };
+
   const decodeURI = (str: string): string => decodeURIComponent(str);
 
   const isQueryEmpty = computed(() => Object.keys(route.query).length === 0);
@@ -113,6 +128,7 @@ export function useHelpers() {
     toggleBodyClass,
     toggleMobileMenu,
     checkForVariationTypeOfAny,
+    checkForOptionTypeOfAny,
     decodeURI,
     formatDate,
   };

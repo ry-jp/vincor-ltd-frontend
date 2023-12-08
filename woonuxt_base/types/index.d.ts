@@ -3,13 +3,21 @@ interface ProductAttributeInput {
   attributeValue: string;
 }
 
+interface ProductAddonInput {
+  addonName: string;
+  addonValue: string;
+}
+
 interface AddToCartInput {
   clientMutationId?: string;
   extraData?: string;
   productId: number;
   quantity: number;
   variation?: ProductAttributeInput[];
+  option?: ProductAddonInput[];
   variationId?: number | null | undefined;
+  optionId?: number | null | undefined;
+  selectedOptions?: ProductAddonInput[];
 }
 
 interface MetaDataInput {
@@ -73,6 +81,11 @@ interface Attribute {
   name?: string | null;
 }
 
+interface Addon {
+  value?: string | null;
+  name?: string | null;
+}
+
 interface ProductAttribute {
   name?: string | null;
   options?: Array<string | null> | null;
@@ -80,12 +93,21 @@ interface ProductAttribute {
   visible?: boolean | null;
 }
 
+interface ProductAddon {
+  name?: string | null;
+  options?: Array<string | null> | null;
+  required?: boolean | null;
+}
+
+
 interface ProductTerm {
   taxonomyName?: string | null;
   slug?: string | null;
 }
 
 interface Product {
+  addons?: { nodes: Array<Addon> } | null;
+  options?: { nodes: Option[] } | null;
   name?: string | null;
   databaseId?: number | null;
   id?: string | null;
@@ -123,6 +145,8 @@ interface Product {
 }
 
 interface SimpleProduct {
+  addons?: { nodes: Array<ProductAddon> } | null;
+  options?: { nodes: Options[] } | null;
   name?: string | null;
   price?: string | null;
   regularPrice?: string | null;
@@ -183,6 +207,15 @@ interface Variation {
   hasAttributes?: boolean | null;
   image?: ProductImage | null;
   attributes?: { nodes: Attribute[] } | null;
+  node?: SimpleProduct | VariableProduct;
+}
+
+interface selectedOptions {
+  name?: string | null;
+  price?: string | null;
+  label?: string | null;
+  priceType?: string | null;
+  addons?: { nodes: Addon[] } | null;
   node?: SimpleProduct | VariableProduct;
 }
 

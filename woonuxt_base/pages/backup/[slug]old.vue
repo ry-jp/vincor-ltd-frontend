@@ -1,16 +1,4 @@
 <script lang="ts" setup>
-// import { ref, computed, onMounted, Ref } from 'vue';
-// import { useRoute, useHead } from 'vue-router';
-// import { useAsyncGql } from '@/composables/useAsyncGql';
-// import { useHelpers } from '@/composables/useHelpers';
-// import { useCart } from '@/composables/useCart';
-// import { Product, Variation, Attribute, AddToCartInput } from '@/types';
-// import Breadcrumb from '@/components/Breadcrumb.vue';
-// import ProductImageGallery from '@/components/ProductImageGallery.vue';
-// import NuxtImg from '@/components/NuxtImg.vue';
-// import WPAdminLink from '@/components/WPAdminLink.vue';
-// import ProductPrice from '@/components/ProductPrice.vue';
-
 const route = useRoute();
 const { arraysEqual, formatArray, checkForVariationTypeOfAny } = useHelpers();
 const { addToCart, isUpdatingCart } = useCart();
@@ -19,6 +7,9 @@ const slug = route.params.slug as string;
 
 const { data } = (await useAsyncGql('getProduct', { slug })) as { data: { value: { product: Product } } };
 const product = data?.value?.product;
+
+
+
 
 useHead({
   title: product?.name || 'Product',
@@ -34,16 +25,8 @@ const attrValues = ref();
 const activeOption = ref(null) as Ref<Variation | null>;
 
 const type = computed(() => (activeVariation.value ? activeVariation.value : product)) as ComputedRef<Product | Variation>;
-const selectProductInput = computed(() => ({
-  productId: type.value.databaseId,
-  quantity: quantity.value,
-  selectedOptions: selectedOptions.value,
-})) as ComputedRef<AddToCartInput>;
-const disabledAddToCart = computed(
-  () => (!activeVariation.value && !!product.variations && !!product.addons) || type.value.stockStatus !== 'IN_STOCK'
-);
-
-const selectedOptions = ref([]) as Ref<any[]>; // Define selectedOptions as an empty array
+const selectProductInput = computed(() => ({ productId: type.value.databaseId, quantity: quantity.value })) as ComputedRef<AddToCartInput>;
+const disabledAddToCart = computed(() => (!activeVariation.value && !!product.variations) || type.value.stockStatus !== 'IN_STOCK');
 
 onMounted(() => {
   if (product.variations) indexOfTypeAny.push(...checkForVariationTypeOfAny(product));
@@ -67,25 +50,6 @@ const updateSelectedVariations = (variations: Variation[]): void => {
   selectProductInput.value.variation = activeVariation.value ? attrValues.value : null;
   variation.value = variations;
 };
-
-const regularProductPrice = computed(() => parseInt(type.value.rawRegularPrice));
-
-function calculateAddonTotalPrice() {
-  let totalPrice = 0;
-
-  for (const selectedOption of selectedOptions.value) {
-    totalPrice += selectedOption.price;
-  }
-
-  return totalPrice;
-}
-
-function calculateTotalPrice() {
-  const addonTotalPrice = calculateAddonTotalPrice();
-  const regularPrice = regularProductPrice.value || 0;
-
-  return addonTotalPrice + regularPrice;
-}
 </script>
 
 <template>
@@ -129,32 +93,23 @@ function calculateTotalPrice() {
 
         <hr />
 
+
+
+
+
+
         <form @submit.prevent="addToCart(selectProductInput)">
           <div class="pt-6 flex flex-col" v-if="product.addons">
-            <div class="flex flex-col gap-4 pb-4" v-for="(addon, index) in product.addons" :key="index">
-              <label>{{ addon.name }}</label>
-
-              <select class=" font-semibold text-base" v-model="selectedOptions[index]">
-                <option class="font-semibold text-base" v-for="option in addon.options" :key="option.label" :value="option">{{ option.label }} <p class=" text-red-500 " v-if="option.price" >(+${{ option.price }})</p></option>
+              <div class="flex flex-col gap-4 pb-4" v-for="addons in product.addons" :key="addons.slug"
+                >{{ addons.name }}
+              <select class=" font-semibold text-base" v-model="selected" v-if="product.addons">
+                <option class="font-semibold text-base" v-for="options in addons.options" :key="addons.slug">
+                  {{ options.label }} <p v-if="options.price" >(+${{ options.price }})</p>
+                </option>
               </select>
             </div>
-            <div class="flex flex-col gap-8">
-              <hr class="my-2" />
-            <p class="font-semibold text-base text-black text-right">
-               x{{ quantity }} - {{ product.name }} - <span class="text-lg text-red-600">{{ `$`+regularProductPrice }}</span>
-            </p>
-            <p class="font-semibold text-base text-black text-right" v-if="selectedOptions.some(option => option.price)">
-              Total Selected Options: ${{ calculateAddonTotalPrice() }}
-            </p>
-            <div v-if="selectedOptions.some(option => option.price)">
-              <hr class="my-4" />
-              <p class="font-semibold text-xl text-red-600 text-right">
-                Total: ${{ calculateTotalPrice() * quantity }}
-              </p>
-              <hr class="my-4" />
+            <p class="font-semibold text-xl text-red-600">Total Price: <ProductPrice :sale-price="type.salePrice" :regular-price="type.regularPrice" /></p>
             </div>
-            </div>
-          </div>
           <AttributeSelections
             v-if="product.type == 'VARIABLE' && product.attributes && product.variations"
             class="mt-4 mb-8"
@@ -185,6 +140,7 @@ function calculateTotalPrice() {
         <hr />
         <div class="flex flex-wrap gap-4">
           <WishlistButton :product="product" />
+
         </div>
       </div>
     </div>
