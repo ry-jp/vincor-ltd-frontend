@@ -32,8 +32,8 @@ fragment SimpleProduct on SimpleProduct {
     }
   }
   addons {
-    fieldName
         description
+        fieldName
         name
         price
         priceType
@@ -41,7 +41,6 @@ fragment SimpleProduct on SimpleProduct {
         titleFormat
         type
         ... on AddonMultipleChoice {
-          choiceType
           description
           options {
             label

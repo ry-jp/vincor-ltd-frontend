@@ -17,7 +17,7 @@ interface AddToCartInput {
   option?: ProductAddonInput[];
   variationId?: number | null | undefined;
   optionId?: number | null | undefined;
-  selectedOptions?: ProductAddonInput[];
+  selectedOptions?: selectedOptions[];
 }
 
 interface MetaDataInput {
@@ -107,7 +107,7 @@ interface ProductTerm {
 
 interface Product {
   addons?: { nodes: Array<Addon> } | null;
-  options?: { nodes: Option[] } | null;
+  options?: { nodes: Options[] } | null;
   name?: string | null;
   databaseId?: number | null;
   id?: string | null;
@@ -146,7 +146,7 @@ interface Product {
 
 interface SimpleProduct {
   addons?: { nodes: Array<ProductAddon> } | null;
-  options?: { nodes: Options[] } | null;
+  options?: Options[] | null;
   name?: string | null;
   price?: string | null;
   regularPrice?: string | null;
@@ -210,8 +210,9 @@ interface Variation {
   node?: SimpleProduct | VariableProduct;
 }
 
-interface selectedOptions {
+interface Options {
   name?: string | null;
+  databaseId?: number;
   price?: string | null;
   label?: string | null;
   priceType?: string | null;
