@@ -1,0 +1,1 @@
+these are from codegen. they do not serve any function in the code. I have pulled some of these types over to the index.d.ts file in the type folder. 
