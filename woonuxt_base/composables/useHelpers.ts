@@ -8,7 +8,7 @@ export function useHelpers() {
   const productsPerPage: number = runtimeConfig.public.PRODUCTS_PER_PAGE || 24;
 
   function toggleMobileMenu(state: boolean | undefined = undefined) {
-    state === undefined ? (isShowingMobileMenu.value = !isShowingMobileMenu.value) : (isShowingMobileMenu.value = state);
+    isShowingMobileMenu.value = state ?? !isShowingMobileMenu.value;
   }
 
   // Formats the given variation array by replacing all dashes and spaces in the name and value properties with underscores.
@@ -42,10 +42,9 @@ export function useHelpers() {
   // Clear all cookies
   function clearAllCookies(): void {
     const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i];
+    for (const cookie of cookies) {
       const eqPos = cookie.indexOf('=');
-      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
       document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
   }
@@ -87,24 +86,9 @@ export function useHelpers() {
     return indexOfTypeAny;
   };
 
-  const checkForOptionTypeOfAny = (product: Product): number[] => {
-    const numberOfOptions = product?.addons?.options?.length || 0;
-    let indexOfTypeAny = [] as number[];
-    for (let index = 0; index < numberOfOptions; index++) {
-      const tempArray = [] as string[];
-      product.addons?.options.forEach((element) => {
-        if (element.addons?.options[index]?.value) tempArray.push(element.addons.options[index].value as string);
-      });
+  const formatURI = (str: string): string => decodeURIComponent(str);
 
-      if (!tempArray.some(Boolean)) indexOfTypeAny.push(index);
-    }
-
-    return indexOfTypeAny;
-  };
-
-  const decodeURI = (str: string): string => decodeURIComponent(str);
-
-  const isQueryEmpty = computed(() => Object.keys(route.query).length === 0);
+  const isQueryEmpty = computed<boolean>(() => Object.keys(route.query).length === 0);
 
   const formatDate = (date: string): string => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -112,6 +96,10 @@ export function useHelpers() {
       day: 'numeric',
       year: 'numeric',
     });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return {
@@ -128,8 +116,8 @@ export function useHelpers() {
     toggleBodyClass,
     toggleMobileMenu,
     checkForVariationTypeOfAny,
-    checkForOptionTypeOfAny,
-    decodeURI,
+    formatURI,
     formatDate,
+    scrollToTop,
   };
 }

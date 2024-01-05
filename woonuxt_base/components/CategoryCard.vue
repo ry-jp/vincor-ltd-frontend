@@ -1,26 +1,28 @@
 <script setup lang="ts">
-const { decodeURI } = useHelpers();
+const { formatURI } = useHelpers();
 interface Props {
   node: ProductCategory;
 }
 
 const { node } = defineProps<Props>();
-const imgWidth = 280;
-const imgHeight = Math.round(imgWidth * 1.25);
+const imageSrc = node.image?.sourceUrl || '/images/placeholder.jpg';
 </script>
 
 <template>
-  <NuxtLink :to="`/product-category/${decodeURI(node.slug)}`" class="relative flex justify-center overflow-hidden border border-white rounded-xl item snap-mandatory snap-x">
+  <NuxtLink
+    v-if="node"
+    :to="`/product-category/${formatURI(node.slug)}`"
+    class="relative flex justify-center overflow-hidden border border-white rounded-xl item snap-mandatory snap-x">
     <NuxtImg
       v-if="node.image?.sourceUrl"
-      :width="imgWidth"
-      :height="imgHeight"
+      width="250"
+      height="300"
       class="absolute inset-0 object-cover w-full h-full"
-      :src="node.image?.sourceUrl || '/images/placeholder.jpg'"
+      :src="imageSrc"
       :alt="node.image?.altText || node.name"
       :title="node.image?.title || node.name"
       loading="lazy"
-      fit="outside"
+      fit="inside"
       format="webp"
       densities="x1 x2" />
     <div class="absolute inset-x-0 bottom-0 opacity-50 bg-gradient-to-t from-black to-transparent h-1/2" />

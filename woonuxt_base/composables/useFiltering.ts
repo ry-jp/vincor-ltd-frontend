@@ -4,13 +4,13 @@
  * is what the filter query looks like: ?filter=pa_color[green,blue],pa_size[md]
  */
 
-const filterQuery = ref('' as string);
-
 export function useFiltering() {
   const route = useRoute();
   const router = useRouter();
   const runtimeConfig = useRuntimeConfig(); // Declare a variable for the runtime config and the filter and order functions
   const { updateProductList } = useProducts();
+
+  const filterQuery = useState<string>('filter', () => '');
 
   filterQuery.value = route.query.filter as string;
 
@@ -79,17 +79,21 @@ export function useFiltering() {
    * Reset the filter value in the url
    */
   function resetFilter(): void {
+    const { scrollToTop } = useHelpers();
     filterQuery.value = '';
     router.push({ query: { ...route.query, filter: undefined } });
 
-    setTimeout(() => updateProductList(), 50);
+    setTimeout(() => {
+      updateProductList();
+      scrollToTop();
+    }, 50);
   }
 
   /**
    * Check if there are any filters active
    * @returns {boolean}
    */
-  const isFiltersActive = computed(() => !!filterQuery.value);
+  const isFiltersActive = computed<boolean>(() => !!filterQuery.value);
 
   /**
    * Filter the products based on the active filters

@@ -1,6 +1,8 @@
 <script setup>
+const { isFiltersActive } = useFiltering();
 const { removeBodyClass } = useHelpers();
 const runtimeConfig = useRuntimeConfig();
+
 const globalProductAttributes = runtimeConfig?.public?.GLOBAL_PRODUCT_ATTRIBUTES || [];
 // hide-categories prop is used to hide the category filter on the product category page
 const { hideCategories } = defineProps({ hideCategories: { type: Boolean, default: false } });
@@ -13,7 +15,7 @@ const { hideCategories } = defineProps({ hideCategories: { type: Boolean, defaul
       <PriceFilter />
       <CategoryFilter v-if="!hideCategories" />
       <div v-for="attribute in globalProductAttributes" :key="attribute.slug">
-        <LazyColorFilter
+        <ColorFilter
           v-if="attribute.slug == 'pa_color' || attribute.slug == 'pa_colour'"
           :filter-slug="attribute.slug"
           :label="attribute.label"
@@ -29,7 +31,8 @@ const { hideCategories } = defineProps({ hideCategories: { type: Boolean, defaul
           :hide-empty="attribute.hideEmpty" />
       </div>
       <OnSaleFilter />
-      <LazyResetFiltersButton />
+      <LazyStarRatingFilter />
+      <LazyResetFiltersButton v-if="isFiltersActive" />
     </div>
   </aside>
   <div class="fixed inset-0 z-50 hidden bg-black opacity-25 filter-overlay" @click="removeBodyClass('show-filters')"></div>

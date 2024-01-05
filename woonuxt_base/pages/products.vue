@@ -1,14 +1,24 @@
 <script setup>
-const { setProducts, updateProductList, products } = useProducts();
+const { setProducts, updateProductList } = useProducts();
+const route = useRoute();
+
 const { isQueryEmpty } = useHelpers();
 
 const { data } = await useAsyncGql('getProducts');
-const allProducts = data.value?.products?.nodes || [];
+const allProducts = data.value?.products?.nodes ?? [];
 setProducts(allProducts);
 
 onMounted(() => {
   if (!isQueryEmpty.value) updateProductList();
 });
+
+watch(
+  () => route.query,
+  () => {
+    if (route.name !== 'products') return;
+    updateProductList();
+  },
+);
 
 useHead({
   title: 'Products',
@@ -27,7 +37,7 @@ useHead({
         <LazyShowFilterTrigger class="md:hidden" />
       </div>
       <ProductGrid />
-      <LazyNoProductsFound />
     </div>
   </div>
+  <NoProductsFound v-else>Could not fecth products from your store. Please check your configuration.</NoProductsFound>
 </template>

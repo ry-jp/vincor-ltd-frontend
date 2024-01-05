@@ -10,6 +10,12 @@ The goal of WooNuxt is to provide a modern, fast, and SEO friendly front-end for
 
 &nbsp;
 
+## Troubleshooting
+
+You can find some common errors and how to fix them in [here](https://woonuxt.com/faq#some-common-errors-to-troubleshoot)
+
+&nbsp;
+
 ## Get Started
 
 - Download the lates WooNuxt Settings (woonuxt-settings.zip) from the releases page here: [Releases](https://github.com/scottyzen/woonuxt-settings/releases)
@@ -78,11 +84,11 @@ Example: I have created a pages directory and added a `contact.vue` file in the 
 
 | Plugin/Software | Version |
 | --------------- | ------- |
-| WordPress       | 6.3.2   |
-| WooCommerce     | 8.2.1   |
-| WPGraphQL       | 1.18.0  |
+| WordPress       | 6.4.2   |
+| WooCommerce     | 8.4.0   |
+| WPGraphQL       | 1.19.0  |
 | WooGraphQL      | 0.18.3  |
-| Node            | 18.17.1 |
+| Node            | 20.10.0 |
 | PHP             | 8.2     |
 
 ### Current translations
