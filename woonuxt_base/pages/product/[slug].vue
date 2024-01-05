@@ -1,16 +1,4 @@
 <script lang="ts" setup>
-// import { ref, computed, onMounted, Ref } from 'vue';
-// import { useRoute, useHead } from 'vue-router';
-// import { useAsyncGql } from '@/composables/useAsyncGql';
-// import { useHelpers } from '@/composables/useHelpers';
-// import { useCart } from '@/composables/useCart';
-// import { Product, Variation, Attribute, AddToCartInput } from '@/types';
-// import Breadcrumb from '@/components/Breadcrumb.vue';
-// import ProductImageGallery from '@/components/ProductImageGallery.vue';
-// import NuxtImg from '@/components/NuxtImg.vue';
-// import WPAdminLink from '@/components/WPAdminLink.vue';
-// import ProductPrice from '@/components/ProductPrice.vue';
-
 const route = useRoute();
 const { arraysEqual, formatArray, checkForVariationTypeOfAny } = useHelpers();
 const { addToCart, isUpdatingCart } = useCart();
@@ -31,19 +19,20 @@ const variation = ref([]) as Ref<Variation[]>;
 const indexOfTypeAny = [] as number[];
 const attrValues = ref();
 
-const activeOption = ref(null) as Ref<Variation | null>;
+const selectedOptions = ref([]) as Ref<ProductAddonOption>;
 
 const type = computed(() => (activeVariation.value ? activeVariation.value : product)) as ComputedRef<Product | Variation>;
+
 const selectProductInput = computed(() => ({
   productId: type.value.databaseId,
   quantity: quantity.value,
-
+  // addons: selectedOptions.value, (I tried this and it spits out an error)
 })) as ComputedRef<AddToCartInput>;
 const disabledAddToCart = computed(() => (!activeVariation.value && !!product.variations && !!product.addons) || type.value.stockStatus !== 'IN_STOCK');
 
-const selectedOptions = ref([]) as Ref<any[]>; // To do for next time. This is the selected options for the addons. Need to add this to the addToCart function. Also need to add the price to the cart. 
-  //const activeVariation = ref(null) as Ref<Variation | null>; is setup but for selectedOptions and then store it in const type = computed(() => (activeVariation.value ? activeVariation.value : product)) as ComputedRef<Product | Variation>; 
-    // but in it's own way and then call it in cartElements/CartCard.vue
+// To do for next time. This is the selected options for the addons. Need to add this to the addToCart function. Also need to add the price to the cart.
+//const activeVariation = ref(null) as Ref<Variation | null>; is setup but for selectedOptions and then store it in const type = computed(() => (activeVariation.value ? activeVariation.value : product)) as ComputedRef<Product | Variation>;
+// but in it's own way and then call it in cartElements/CartCard.vue
 
 onMounted(() => {
   if (product.variations) indexOfTypeAny.push(...checkForVariationTypeOfAny(product));
@@ -117,7 +106,7 @@ function calculateTotalPrice() {
           <div class="flex items-center gap-2">
             <span class="text-gray-400">{{ $t('messages.shop.availability') }}: </span>
             <span v-if="type.stockStatus == 'IN_STOCK'" class="text-green-600">{{ $t('messages.shop.inStock') }}</span>
-            <span v-else class="text-red-600">{{ $t('messages.shop.outOfStock') }}</span>
+            <span v-else class="text-red-400">{{ $t('messages.shop.outOfStock') }}</span>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-gray-400">{{ $t('messages.shop.sku') }}: </span>
@@ -132,26 +121,51 @@ function calculateTotalPrice() {
         <form @submit.prevent="addToCart(selectProductInput)">
           <div class="pt-6 flex flex-col" v-if="product.addons">
             <div class="flex flex-col gap-4 pb-4" v-for="(addon, index) in product.addons" :key="index">
-              <label>{{ addon.name }}</label>
+              <label>{{ addon.name }}:<span class=" text-base italic text-gray-700 py-2">{{ addon.required ? ' ( Selection Required )' : '' }}</span></label>
 
-              <select class="font-semibold text-base" v-model="selectedOptions[index]">
-                <option class="font-semibold text-base" v-for="option in addon.options" :key="option.label" :value="option">
+              <div v-if="addon.type === 'MULTIPLE_CHOICE'">
+                <select class="select select-bordered font-semibold text-base w-full" v-model="selectedOptions[index]" :selected="addon.name" :required="addon.required">
+                  <option disabled selected>{{ addon.name }}:</option>
+                  <option class="font-semibold text-base" v-for="option in addon.options" :key="option.label" :value="option">
+                    {{ option.label }}
+                    <p class="text-red-500" v-if="option.price">(+${{ option.price }})</p>
+                  </option>
+                </select>
+
+              </div>
+
+              <div v-if="addon.type === 'CHECKBOX'">
+                <div v-for="option in addon.options" :key="option.label">
+                  <input type="checkbox" v-model="selectedOptions" :value="option" class="mr-2" />
                   {{ option.label }}
                   <p class="text-red-500" v-if="option.price">(+${{ option.price }})</p>
-                </option>
-              </select>
+                  <label class="flex items-center"> </label>
+                </div>
+              </div>
             </div>
-            <div class="flex flex-col gap-8">
-              <hr class="my-2" />
-              <p class="font-semibold text-base text-black text-right">
-                x{{ quantity }} - {{ product.name }} - <span class="text-lg text-red-600">{{ `$` + regularProductPrice }}</span>
-              </p>
-              <p class="font-semibold text-base text-black text-right" v-if="selectedOptions.some((option) => option.price)">
-                Total Selected Options: ${{ calculateAddonTotalPrice() }}
-              </p>
+            <div class="flex flex-col">
+              <hr class="" />
+              <div v-if="selectedOptions.some((option) => option.price)">
+                <div class="my-2">
+                  <h2 class="text-base font-bold">Product:</h2>
+                  <p class="font-semibold text-base text-gray-700">
+                    ({{ quantity }}) - {{ product.name }} - <span class="text-lg text-red-400">{{ `$` + regularProductPrice }}</span>
+                  </p>
+                  <hr class="my-2" />
+                  <div class="flex flex-col gap-2 pt-4">
+                    <h2 class="text-base font-bold">Selected Options:</h2>
+                    <ul>
+                      <li class=" text-gray-700 font-semibold text-base" v-for="(option, index) in selectedOptions" :key="index">{{ option.label }} - <span class="text-red-400">${{ option.price }}</span></li>
+                    </ul>
+                  </div>
+                  <p class="text-base font-bold text-black pt-4" v-if="selectedOptions.some((option) => option.price)">
+                    Total Selected Options: <span class="text-red-600">${{ calculateAddonTotalPrice() }}</span>
+                  </p>
+                </div>
+              </div>
               <div v-if="selectedOptions.some((option) => option.price)">
                 <hr class="my-4" />
-                <p class="font-semibold text-xl text-red-600 text-right">Total: ${{ calculateTotalPrice() * quantity }}</p>
+                <p class="font-bold text-xl text-red-600 text-right">Total: ${{ calculateTotalPrice() * quantity }}</p>
                 <hr class="my-4" />
               </div>
             </div>

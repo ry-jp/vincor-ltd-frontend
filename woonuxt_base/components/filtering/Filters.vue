@@ -29,7 +29,6 @@ const { hideCategories } = defineProps({ hideCategories: { type: Boolean, defaul
           :hide-empty="attribute.hideEmpty" />
       </div>
       <OnSaleFilter />
-      <LazyStarRatingFilter />
       <LazyResetFiltersButton />
     </div>
   </aside>
