@@ -61,7 +61,6 @@ const colorVariableImage = computed(() => {
         densities="x1 x2" />
     </NuxtLink>
     <div class="p-2">
-      <StarRating :rating="node.averageRating" :count="node.reviewCount" />
       <NuxtLink :to="`/product/${formatURI(node.slug)}`" :title="node.name">
         <h2 class="mb-2 font-light leading-tight">{{ node.name }}</h2>
       </NuxtLink>
