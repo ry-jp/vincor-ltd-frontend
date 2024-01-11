@@ -20,7 +20,6 @@ const props = defineProps({
                 – {{ new Date(review.node.date).toLocaleString($t('messages.general.langCode'), { month: 'long', day: 'numeric', year: 'numeric' }) }}</span
               >
             </div>
-            <StarRating :rating="review.rating" :hide-count="true" class="text-sm" />
           </div>
         </div>
         <div class="mt-4 text-gray-700 italic prose-sm" v-html="review.node.content"></div>
