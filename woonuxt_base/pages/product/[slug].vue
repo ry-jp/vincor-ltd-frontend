@@ -14,6 +14,7 @@ const variation = ref([]) as Ref<Variation[]>;
 const indexOfTypeAny = [] as number[];
 const attrValues = ref();
 
+const selectedOptions = ref([]) as Ref<ProductAddonOption>;
 const type = computed(() => (activeVariation.value ? activeVariation.value : product.value));
 const selectProductInput = computed(() => ({ productId: type.value.databaseId, quantity: quantity.value })) as ComputedRef<AddToCartInput>;
 const mergeLiveStockStatus = (payload: Product): void => {
@@ -59,6 +60,26 @@ const updateSelectedVariations = (variations: Attribute[]): void => {
 
 const stockStatus = computed(() => type.value?.stockStatus || StockStatusEnum.OUT_OF_STOCK);
 const disabledAddToCart = computed(() => !type.value || stockStatus.value === StockStatusEnum.OUT_OF_STOCK || isUpdatingCart.value);
+
+const regularProductPrice = computed(() => parseInt(type.value.rawRegularPrice));
+
+function calculateAddonTotalPrice() {
+  let totalPrice = 0;
+
+  for (const selectedOption of selectedOptions.value) {
+    totalPrice += selectedOption.price;
+  }
+
+  return totalPrice;
+}
+
+function calculateTotalPrice() {
+  const addonTotalPrice = calculateAddonTotalPrice();
+  const regularPrice = regularProductPrice.value || 0;
+
+  return addonTotalPrice + regularPrice;
+}
+
 </script>
 
 <template>
@@ -73,7 +94,8 @@ const disabledAddToCart = computed(() => !type.value || stockStatus.value === St
         :first-image="product.image.sourceUrl"
         :main-image="type.image ? type.image?.sourceUrl || product.image.sourceUrl : '/images/placeholder.jpg'"
         :gallery="product.galleryImages!"
-        :node="type" />
+        :node="type"
+      />
       <NuxtImg v-else class="relative flex-1" src="/images/placeholder.jpg" :alt="product?.name || 'Product'" />
 
       <div class="lg:max-w-md xl:max-w-lg md:py-2 w-full">
@@ -104,6 +126,57 @@ const disabledAddToCart = computed(() => !type.value || stockStatus.value === St
         <hr />
 
         <form @submit.prevent="addToCart(selectProductInput)">
+<div class="pt-6 flex flex-col" v-if="product.addons">
+            <div class="flex flex-col gap-4 pb-4" v-for="(addon, index) in product.addons" :key="index">
+              <label>{{ addon.name }}:<span class=" text-base italic text-gray-700 py-2">{{ addon.required ? ' ( Selection Required )' : '' }}</span></label>
+
+              <div v-if="addon.type === 'MULTIPLE_CHOICE'">
+                <select class="select select-bordered font-semibold text-base w-full" v-model="selectedOptions[index]" :selected="addon.name" :required="addon.required">
+                  <option disabled selected>{{ addon.name }}:</option>
+                  <option class="font-semibold text-base" v-for="option in addon.options" :key="option.label" :value="option">
+                    {{ option.label }}
+                    <p class="text-red-500" v-if="option.price">(+${{ option.price }})</p>
+                  </option>
+                </select>
+
+              </div>
+
+              <div v-if="addon.type === 'CHECKBOX'">
+                <div v-for="option in addon.options" :key="option.label">
+                  <input type="checkbox" v-model="selectedOptions" :value="option" class="mr-2" />
+                  {{ option.label }}
+                  <p class="text-red-500" v-if="option.price">(+${{ option.price }})</p>
+                  <label class="flex items-center"> </label>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <hr class="" />
+              <div v-if="selectedOptions.some((option) => option.price)">
+                <div class="my-2">
+                  <h2 class="text-base font-bold">Product:</h2>
+                  <p class="font-semibold text-base text-gray-700">
+                    ({{ quantity }}) - {{ product.name }} - <span class="text-lg text-red-400">{{ `$` + regularProductPrice }}</span>
+                  </p>
+                  <hr class="my-2" />
+                  <div class="flex flex-col gap-2 pt-4">
+                    <h2 class="text-base font-bold">Selected Options:</h2>
+                    <ul>
+                      <li class=" text-gray-700 font-semibold text-base" v-for="(option, index) in selectedOptions" :key="index">{{ option.label }} - <span class="text-red-400">${{ option.price }}</span></li>
+                    </ul>
+                  </div>
+                  <p class="text-base font-bold text-black pt-4" v-if="selectedOptions.some((option) => option.price)">
+                    Total Selected Options: <span class="text-red-600">${{ calculateAddonTotalPrice() }}</span>
+                  </p>
+                </div>
+              </div>
+              <div v-if="selectedOptions.some((option) => option.price)">
+                <hr class="my-4" />
+                <p class="font-bold text-xl text-red-600 text-right">Total: ${{ calculateTotalPrice() * quantity }}</p>
+                <hr class="my-4" />
+              </div>
+            </div>
+          </div>
           <AttributeSelections
             v-if="product.type == 'VARIABLE' && product.attributes && product.variations"
             class="mt-4 mb-8"
@@ -141,8 +214,7 @@ const disabledAddToCart = computed(() => !type.value || stockStatus.value === St
 
         <div class="flex flex-wrap gap-4">
           <WishlistButton :product="product" />
-          <ShareButton :product="product" />
-        </div>
+                  </div>
       </div>
     </div>
     <div v-if="product.description || product.reviews" class="my-32">
