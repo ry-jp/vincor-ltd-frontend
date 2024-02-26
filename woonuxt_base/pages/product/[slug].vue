@@ -85,6 +85,39 @@ function calculateTotalPrice() {
   return addonTotalPrice + regularPrice;
 }
 
+function convertData(inputData:any) {
+  // valueText is the value used for multipleChoice type, It's a constructed type.
+  return inputData.reduce((accumulator, { fieldName, label, valueText }) => {
+    const entry =  accumulator.get(fieldName) || { fieldName, value: valueText ? '' : [] };
+    if(valueText) {
+      entry.value = valueText;
+    } else {
+      entry.value.push(valueText ? valueText : label);
+    }
+    accumulator.set(fieldName, entry);
+    return accumulator;
+  }, new Map()).values();
+}
+
+function getMultipleChoiceTypeOptions(addon: any) {
+  return addon.options.map((o: any, index) => {
+    return {
+      ...o,
+      valueText: `${o.label}-${index+1}`,
+      fieldName: addon.fieldName,
+      fieldType: addon.type
+    }
+  });
+}
+
+
+function mergeArrayValuesForCheckboxType(selectedAddons:any, allAddons:any) {
+    return allAddons.map((addon: any) => ({
+        fieldName: addon.fieldName,
+        value: (selectedAddons.find((selectedAddon: any) => selectedAddon.fieldName === addon.fieldName) || { value: '' }).value,
+    }));
+}
+
 </script>
 
 <template>
@@ -127,16 +160,20 @@ function calculateTotalPrice() {
 
         <hr />
 
-        <form @submit.prevent="addToCart(selectProductInput)">
-                    <div class="pt-6 flex flex-col" v-if="product.addons">
+        <form @submit.prevent="{
+            const addons = [...convertData(JSON.parse(JSON.stringify(selectedOptions)))];
+            const addonsWithCheckBoxType = mergeArrayValuesForCheckboxType(addons, JSON.parse(JSON.stringify(product.addons)));
+            addToCart({...selectProductInput, addons: addonsWithCheckBoxType });
+          }">
+          <div class="pt-6 flex flex-col" v-if="product.addons">
             <div class="flex flex-col gap-4 pb-4" v-for="(addon, index) in product.addons" :key="index">
               <label>{{ addon.name }}:<span class=" text-base italic text-gray-700 py-2">{{ addon.required ? ' ( Selection Required )' : '' }}</span></label>
 
               <div v-if="addon.type === 'MULTIPLE_CHOICE'">
                 <select class="select select-bordered font-semibold text-base w-full" v-model="selectedOptions[index]" :selected="addon.name" :required="addon.required">
                   <option disabled selected>{{ addon.name }}:</option>
-                  <option class="font-semibold text-base" v-for="option in addon.options" :key="option.label" :value="option">
-                    {{ option.label }}
+                  <option class="font-semibold text-base" v-for="(option, optionIndex) in getMultipleChoiceTypeOptions(addon)" :key="option.label" :value="option">
+                    {{ option.label }} -{{ optionIndex }}
                     <p class="text-red-500" v-if="option.price">(+${{ option.price }})</p>
                   </option>
                 </select>
@@ -145,7 +182,7 @@ function calculateTotalPrice() {
 
               <div v-if="addon.type === 'CHECKBOX'">
                 <div v-for="option in addon.options" :key="option.label">
-                  <input type="checkbox" v-model="selectedOptions" :value="option" class="mr-2" />
+                  <input type="checkbox" v-model="selectedOptions" :value="{...option, fieldName: addon.fieldName, fieldType: addon.type}" class="mr-2" />
                   {{ option.label }}
                   <p class="text-red-500" v-if="option.price">(+${{ option.price }})</p>
                   <label class="flex items-center"> </label>
