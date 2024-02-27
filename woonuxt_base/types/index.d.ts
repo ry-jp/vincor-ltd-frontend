@@ -529,3 +529,8 @@ interface Order {
   customer?: Customer | null;
   lineItems?: { nodes?: LineItem[] } | null;
 }
+interface WooNuxtSEOItem {
+  provider: string;
+  url?: string;
+  handle?: string;
+}

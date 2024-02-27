@@ -31,9 +31,7 @@ const colorVariableImage = computed(() => {
       const hasMatchingSlug = paColor.value.some((color) => variation.slug.includes(color));
       return hasMatchingAttributes || hasMatchingSlug;
     });
-    if (activeColorImage?.length) {
-      return activeColorImage[0].image?.sourceUrl;
-    }
+    if (activeColorImage?.length) activeColorImage[0].image?.sourceUrl;
   }
   return null;
 });
@@ -48,7 +46,8 @@ const colorVariableImage = computed(() => {
         :src="colorVariableImage"
         :alt="node.image?.altText || node.name"
         :title="node.image?.title || node.name"
-        :loading="index <= 3 ? 'eager' : 'lazy'" />
+        :loading="index <= 3 ? 'eager' : 'lazy'"
+        class="skeleton" />
       <NuxtImg
         v-else
         :width="imgWidth"
@@ -59,6 +58,7 @@ const colorVariableImage = computed(() => {
         :loading="index <= 3 ? 'eager' : 'lazy'"
         fit="outside"
         format="webp"
+        class="skeleton"
         densities="x1 x2" />
     </NuxtLink>
     <div class="p-2">
@@ -75,6 +75,7 @@ const colorVariableImage = computed(() => {
   @apply rounded-lg object-top object-cover w-full;
   aspect-ratio: 1/1.125;
 }
+
 .product-card:hover {
   h2 {
     @apply text-primary;
