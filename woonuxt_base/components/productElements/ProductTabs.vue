@@ -1,45 +1,32 @@
-<script setup>
-const props = defineProps({
-  product: { type: Object, default: null },
+<script setup lang="ts">
+const { product } = defineProps({
+  product: { type: Object as PropType<Product>, required: true },
 });
 
-const show = ref(0);
+const initialTab = product.description ? 0 : 1;
+const show = ref(initialTab);
 </script>
 
 <template>
   <div>
     <nav class="border-b flex gap-8 tabs">
-      <a :class="show === 0 ? 'active' : ''" @click.prevent="show = 0">{{ $t('messages.shop.productDescription') }}</a>
-      <a :class="show === 1 ? 'active' : ''" @click.prevent="show = 1">Document</a>
+      <button v-if="product.description" type="button" :class="show === 0 ? 'active' : ''" @click.prevent="show = 0">{{ $t('messages.shop.productDescription') }}</button>
+      <button type="button" :class="show === 1 ? 'active' : ''" @click.prevent="show = 1">{{ $t('messages.shop.reviews') }} ({{ product.reviewCount }})</button>
     </nav>
     <div class="tab-contents">
-      <div v-if="show === 0" class="font-light mt-8 prose" v-html="product.description"></div>
-      <div v-if="show === 1">
-        <div class="flex flex-wrap gap-32 items-start">
-          <div class="flex max-w-sm gap-4 prose">
-                      </div>
-          <div class="divide-y flex-1">
-            <p class="text-red-600 text-lg">{{ product.category }}</p>
-                    <p class="text-red-600 text-lg">{{ product.sku }}</p>
-                  <div>
-                  <iframe :src="`https://vincor.com/wp-content/pdf/products/${product.sku}.pdf`" width="100%" height="1024">
-  </iframe>
-
-            </div>
-          </div>
-        </div>
-      </div>
+      <div v-if="show === 0 && product.description" class="font-light mt-8 prose" v-html="product.description" />
+      <ProductReviews v-if="show === 1" :product="product" />
     </div>
   </div>
 </template>
 
-<style lang="postcss">
-.tabs a {
+<style lang="postcss" scoped>
+.tabs button {
   @apply border-transparent border-b-2 text-lg pb-8;
   margin-bottom: -1px;
 }
 
-.tabs a.active {
+.tabs button.active {
   @apply border-primary text-primary;
 }
 </style>
